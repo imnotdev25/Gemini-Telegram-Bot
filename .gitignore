@@ -1,0 +1,6 @@
+.venv/
+.idea/
+config.env
+images/
+logs.txt
+*.session
