@@ -8,7 +8,7 @@ from bot.helpers.ai import pyAssistant, dsAssist, codeAssistant
 from bot.helpers.filters import allowed_chat, allowed_users, dev_cmd
 
 
-@Client.on_message(filters.command(["pyassistant", "pya", "pyassist", "pybot", "python"]) & allowed_users, allowed_chat, dev_cmd)
+@Client.on_message(filters.command(["pyassistant", "pya", "pyassist", "pybot", "python"]))
 async def pyassistant(_, message: Message):
     """ Python Assistant"""
 
@@ -41,8 +41,7 @@ async def pyassistant(_, message: Message):
     return await py_reply.edit(f"{output}", disable_web_page_preview=True)
 
 
-@Client.on_message(filters.command(["dsassistant", "dsa", "dsassist", "dsbot", "ds"]) & allowed_users,
-                   allowed_chat, dev_cmd)
+@Client.on_message(filters.command(["dsassistant", "dsa", "dsassist", "dsbot", "ds"]))
 async def dsAssistant(_, message: Message):
     """ Data Science Assistant"""
 
@@ -75,8 +74,7 @@ async def dsAssistant(_, message: Message):
     return await ds_reply.edit(f"{output}", disable_web_page_preview=True)
 
 
-@Client.on_message(filters.command(["codeassistant", "codea", "codeassist", "codebot", "code"]) & allowed_users,
-                   allowed_chat, dev_cmd)
+@Client.on_message(filters.command(["codeassistant", "codea", "codeassist", "codebot", "code"]))
 async def codAssistant(_, message: Message):
     """ Code Assistant"""
 

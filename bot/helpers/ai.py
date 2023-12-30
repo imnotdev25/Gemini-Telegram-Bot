@@ -48,7 +48,7 @@ async def rewrite(message: str) -> str:
             Fully Rewritten: You're going to adore New York City.
             Original: {message}
             Fixed Grammar:
-            Fully Rewritten:"""
+            """
         r = genai.generate_text(**defaults, prompt=prompt)
         response = re.sub(r'{', '', r.result)
         return response
@@ -85,7 +85,7 @@ async def cf(message: str, model: str, types: str) -> str:
                                 "content": "You are now chatting with an AI assistant. The assistant will introduce itself in a moment. You are exclusively for Kaggle Group members mension in your introduction."},
                                {"role": "user", "content": message}]}
         try:
-            response = await client.post(url=url + model, json=inputs)
+            response = await client.post(url=url + model, json=inputs, timeout=60)
             await client.aclose()
             return response.json()["result"]["response"]
         except Exception as e:

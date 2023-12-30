@@ -8,7 +8,7 @@ from bot.helpers.ai import stableDiffusion, deepaiImg, bingImg, deepaiLogo
 from bot.helpers.filters import allowed_chat, allowed_users, dev_cmd
 
 
-@Client.on_message(filters.command(["imagine", "im", "imgen"]) & allowed_chat, allowed_users, dev_cmd)
+@Client.on_message(filters.command(["imagine", "im", "imgen"]))
 async def imGen(_, message: Message):
     """ Imagine Generator"""
 
@@ -41,7 +41,7 @@ async def imGen(_, message: Message):
     return await message.reply_photo(output) and await imGen_reply.delete() and os.remove(output)
 
 
-@Client.on_message(filters.command(["deepai", "deep"]) & allowed_chat, allowed_users, dev_cmd)
+@Client.on_message(filters.command(["deepai", "deep"]) & allowed_users)
 async def deepAi(_, message: Message):
     """ Deep AI """
 
@@ -74,7 +74,7 @@ async def deepAi(_, message: Message):
     return (await message.reply_photo(output) and await deepAi_reply.delete()) and os.remove(output)
 
 
-@Client.on_message(filters.command(["bi", "bingimg"]) & allowed_chat, allowed_users, dev_cmd)
+@Client.on_message(filters.command(["bi", "bingimg"]) & allowed_users)
 async def bingImgGen(_, message: Message):
     """ Bing Image Generator """
 
@@ -108,7 +108,7 @@ async def bingImgGen(_, message: Message):
     return (message.reply_photo(i) for i in output)
 
 
-@Client.on_message(filters.command(["logo", "lo"]) & allowed_chat, allowed_users, dev_cmd)
+@Client.on_message(filters.command(["logo", "lo"]) & allowed_users)
 async def deepAiLogo(_, message: Message):
     """ Deep AI Logo Generator """
 

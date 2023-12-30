@@ -5,7 +5,7 @@ from bot.helpers.ai import bing, meta, mistral, llama, rewrite
 from bot.helpers.filters import allowed_chat, allowed_users, dev_cmd
 
 
-@Client.on_message(filters.command(["bing", "bingbot", "bingbot", "bingbot", "chat"]))
+@Client.on_message(filters.command(["bing", "bingbot", "bingbot", "bingbot", "gpt"]))
 async def bingBot(_, message: Message):
     """ Bing Bot"""
 
@@ -41,7 +41,7 @@ async def metaBot(_, message: Message):
     return await meta_reply.edit(f"{output}", disable_web_page_preview=True)
 
 
-@Client.on_message(filters.command(["mistral", "mistralbot", "mistralbot", "mistralbot"]))
+@Client.on_message(filters.command(["mistral", "mistralbot", "mb", "chat"]))
 async def mistralBot(_, message: Message):
     """ Mistral Bot"""
 
@@ -77,7 +77,7 @@ async def llamaBot(_, message: Message):
     return await llama_reply.edit(f"{output}", disable_web_page_preview=True)
 
 
-@Client.on_message(filters.command(["rewrite", "rewritebot", "rewritebot", "rewritebot"]))
+@Client.on_message(filters.command(["rewrite", "rewritebot", "rb", "grammar"]))
 async def rewriteBot(_, message: Message):
     """ Rewrite Bot"""
 
