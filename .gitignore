@@ -4,3 +4,5 @@ config.env
 images/
 logs.txt
 *.session
+test.py
+*.png

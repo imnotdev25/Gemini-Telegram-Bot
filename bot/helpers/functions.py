@@ -1,6 +1,8 @@
+import random
+import string
+
 from pyrogram.enums import ChatMemberStatus, ChatType
 from pyrogram.types import Message
-
 from bot.config import SUDO_USERID
 
 
@@ -66,3 +68,7 @@ def get_readable_bytes(size: str) -> str:
         raised_to_pow += 1
 
     return f"{str(round(size, 2))} {dict_power_n[raised_to_pow]}B"
+
+
+def random_string(length: int) -> str:
+    return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))

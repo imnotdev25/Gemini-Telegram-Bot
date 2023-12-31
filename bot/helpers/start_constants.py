@@ -11,13 +11,15 @@ CHAT_TEXT = """
 
 • /meta: Meta Llama Bot
 
-• /chat: ChatGPT4 Assistant 
+• /bing: ChatGPT4 Assistant 
 
 • /python: Python Assistant (Generate. Improve. Debug.).
 
 • /ds: Data Science Assistant.
 
 • /code: Code Assistant.
+
+• /bard: Bard Assistant.
 """
 
 IMG_TEXT = """ 
@@ -27,7 +29,7 @@ IMG_TEXT = """
 
 • /deepai: Deep AI
 
-• /bingimg: Bing Image Creator
+• /bi: Bing Image Creator
 
 • /logo: Logo Creator
 

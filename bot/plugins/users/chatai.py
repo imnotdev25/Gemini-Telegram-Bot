@@ -1,11 +1,11 @@
 from pyrogram.types import Message
 from pyrogram import Client, filters
 # from bot.helpers.decorators import ratelimiter
-from bot.helpers.ai import bing, meta, mistral, llama, rewrite
+from bot.helpers.ai import bing, meta, mistral, llama, rewrite, bard
 from bot.helpers.filters import allowed_chat, allowed_users, dev_cmd
 
 
-@Client.on_message(filters.command(["bing", "bingbot", "bingbot", "bingbot", "gpt"]))
+@Client.on_message(filters.command(["bing", "bingbot", "bingbot", "bingbot"]))
 async def bingBot(_, message: Message):
     """ Bing Bot"""
 

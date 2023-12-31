@@ -16,7 +16,7 @@ START_BUTTON = [
     [
         InlineKeyboardButton(
             "🔭 Original Repo",
-            url="https://github.com/imnotdev/Gemini-Telegram-Bot",
+            url="https://github.com/imnotdev25/Gemini-Telegram-Bot",
         )
     ],
 ]

@@ -1,5 +1,5 @@
 Pyrogram>=2.0.59
-bardapi~=0.1.38
+bardapi~=0.1.30
 langdetect>=1.0.9
 google-generativeai
 TgCrypto==1.2.4

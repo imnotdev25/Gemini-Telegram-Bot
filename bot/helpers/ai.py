@@ -10,8 +10,9 @@ import httpx
 from httpx import AsyncClient
 from bardapi import BardAsync, BardAsyncCookies
 from bot.helpers.BingImageCreater import ImageGenAsync
-from bot.config import PALM_API_KEY, DEEPAI_API_KEY, BING_U, CF_API_KEY, BING_CH, BING_COOKIES
+from bot.config import PALM_API_KEY, DEEPAI_API_KEY, BING_U, CF_API_KEY, BING_CH, BING_COOKIES, BARD_1PSID, BARD_1PSIDTS
 from g4f.Provider.Bing import Bing, Tones
+from bot.helpers.functions import random_string
 
 
 async def gemini(message: str, prompt: str) -> str:
@@ -72,8 +73,17 @@ async def pyAssistant(message: str) -> str:
     return await gemini(message, prompt=prompt)
 
 
-async def bard(message: str) -> dict:
-    pass
+async def bard(message: str) -> str:
+    try:
+        data = {
+            "message": "string",
+            "dialog_messages": "[{\"bot\":\"\",\"user\":\"\"}]"
+        }
+        client = AsyncClient()
+        response = await client.post(url="https://api.safone.dev/bard", json=data, timeout=60)
+        return await client.aclose() and response.json()['candidates'][0]['content']['parts'][0]['text']
+    except Exception as e:
+        return f"Something went wrong while generating message. Error: {e}"
 
 
 async def cf(message: str, model: str, types: str) -> str:
@@ -94,9 +104,11 @@ async def cf(message: str, model: str, types: str) -> str:
     elif types == "img":
         inputs = {"prompt": message}
         try:
+            try: os.mkdir("images")
+            except: pass
             response = await client.post(url=url + model, json=inputs, timeout=60)
             await client.aclose()
-            with open(f"images/{''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))}.png",
+            with open(f"images/{random_string(10)}.png",
                       "wb") as f:
                 f.write(response.content)
                 f.close()
@@ -134,7 +146,7 @@ async def deepai(message: str, typ: str, urn: str) -> str:
             r = await client.post(url=base_url + urn, data=data, headers=headers, timeout=60)
             image = httpx.get(r.json()["output_url"]).content
             await client.aclose()
-            with open(f"images/{''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))}.png",
+            with open(f"images/{random_string(10)}.png",
                       "wb") as f:
                 f.write(image)
                 f.close()
@@ -162,15 +174,14 @@ async def bingImg(message: str) -> list:
     try:
         img = ImageGenAsync(auth_cookie=BING_U, all_cookies=BING_COOKIES)
         r = img.get_images(message)
-        path = await img.save_images(links=r, output_dir="images", download_count=4)
-        # img_paths = []
-        # for img_url in r:
-        #     img = httpx.get(img_url).content
-        #     with open(f"images/{''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))}.png",
-        #               "wb") as f:
-        #         f.write(img)
-        #         f.close()
-        #     img_paths.append(os.path.abspath(f.name))
-        return path
+        img_paths = []
+        for img_url in r:
+            img = httpx.get(img_url).content
+            with open(f"images/{''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))}.png",
+                      "wb") as f:
+                f.write(img)
+                f.close()
+            img_paths.append(os.path.abspath(f.name))
+        return img_paths
     except Exception as e:
         return [e]
