@@ -6,3 +6,5 @@ logs.txt
 *.session
 test.py
 *.png
+__pycache__/
+.pyc
