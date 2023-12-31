@@ -22,10 +22,10 @@ async def ocr(_, message: Message):
             formatz in replied_message.document.mime_type for formatz in {"png", "jpg", "jpeg", "webp"}):
         content = await message.reply_to_message.download(os.path.join(os.getcwd(), f"{random_string(10)}.{replied_message.document.mime_type}"))
         r = await ocrImg(content)
-        await ocr_reply.edit(r)
+        await ocr_reply.edit(r) and os.remove(content)
     elif replied_message.media.PHOTO:
         content = await message.reply_to_message.download(os.path.join(os.getcwd(), f"{random_string(10)}.jpg"))
         r = await ocrImg(content)
-        await message.reply_text(r)
+        await message.reply_text(r) and os.remove(content)
     else:
         return await ocr_reply.edit(ocr_usage)
