@@ -36,10 +36,10 @@ async def get_price_history(message: str) -> str:
                           font=dict(family="Courier New, monospace", size=16, color="#7f7f7f"))
         path = os.getcwd() + f"images/{random_string(5)}.png"
         fig.write_image(path)
-        yield path
+        return os.getcwd() + path
 
     except Exception as e:
-        yield f"Something went wrong while generating image. Error: {e}"
+        return f"Something went wrong while generating image. Error: {e}"
 
 
 async def get_price_history_text(message: str) -> str:
