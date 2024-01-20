@@ -25,7 +25,8 @@ async def pricehistory(_, message: Message):
             return await prehistory_reply.edit(pricehistory_usage)
 
         output = await get_price_history(content)
-        return await message.reply_photo(output, caption=await get_price_history_text(
-            content)) and await prehistory_reply.delete() and os.remove(output)
+        caption = await get_price_history_text(content)
+        return await message.reply_photo(output, caption=caption) and await prehistory_reply.delete() and os.remove(
+            output)
     except Exception as e:
         return await prehistory_reply.edit(f"Something went wrong while getting history. Error: {e}")

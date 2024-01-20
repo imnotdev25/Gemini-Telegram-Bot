@@ -1,3 +1,4 @@
+import os
 import re
 from typing import Any
 
@@ -34,7 +35,7 @@ async def get_price_history(message: str) -> Any:
                        textposition="middle right", name="Price", marker=dict(color='#69B0AC', size=10)), row=2, col=1)
         fig.update_layout(height=720, width=1080, title_text="Price History", title_x=0.5,
                           font=dict(family="Courier New, monospace", size=16, color="#7f7f7f"))
-        path = f"images/{random_string(5)}.png"
+        path = os.getcwd() + f"images/{random_string(5)}.png"
         fig.write_image(path)
         return path
 
