@@ -1,6 +1,7 @@
 import os
 
 from httpx import AsyncClient
+
 from bot.helpers.functions import random_string
 
 
@@ -58,7 +59,7 @@ async def msCreate(message: str) -> str:
         )
         img = await client.get(response.json()['image_urls_thumbnail'][0]['ImageUrl'])
         await client.aclose()
-        with open(f"image/{random_string(5)}.jpg", "wb") as f:
+        with open(f"images/{random_string(5)}.jpg", "wb") as f:
             f.write(img.content)
             f.close()
         return os.path.abspath(f.name)
