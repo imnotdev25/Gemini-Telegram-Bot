@@ -1,8 +1,8 @@
-from pyrogram.types import Message
 from pyrogram import Client, filters
+from pyrogram.types import Message
+
 # from bot.helpers.decorators import ratelimiter
-from bot.helpers.ai import bing, meta, mistral, llama, rewrite, bard
-from bot.helpers.filters import allowed_chat, allowed_users, dev_cmd
+from bot.helpers.ai import bing, meta, mistral, llama, rewrite
 
 
 @Client.on_message(filters.command(["bing", "bingbot", "bingbot", "bingbot"]))
@@ -59,7 +59,7 @@ async def mistralBot(_, message: Message):
     return await mistral_reply.edit(f"{output}", disable_web_page_preview=True)
 
 
-@Client.on_message(filters.command(["llama", "llamabot", "ll", "llamabot"]))
+@Client.on_message(filters.command(["llm", "llamabot", "llamabot"]))
 async def llamaBot(_, message: Message):
     """ Llama Bot"""
 
@@ -74,7 +74,7 @@ async def llamaBot(_, message: Message):
         return await llama_reply.edit(llama_usage)
 
     output = await llama(content)
-    return await llama_reply.edit(f"{output}", disable_web_page_preview=True)
+    await llama_reply.edit(f"{output}", disable_web_page_preview=True)
 
 
 @Client.on_message(filters.command(["rewrite", "rewritebot", "rb", "grammar"]))
@@ -92,4 +92,4 @@ async def rewriteBot(_, message: Message):
         return await rewrite_reply.edit(rewrite_usage)
 
     output = await rewrite(content)
-    return await rewrite_reply.edit(f"{output}", disable_web_page_preview=True)
+    await rewrite_reply.edit(f"{output}", disable_web_page_preview=True)

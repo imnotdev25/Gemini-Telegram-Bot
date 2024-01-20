@@ -1,5 +1,6 @@
 import json
 from os import getenv
+
 from dotenv import load_dotenv
 
 load_dotenv("config.env")
@@ -24,3 +25,5 @@ CF_API_KEY = getenv("CF_API_KEY")
 BING_COOKIES = getenv("BING_COOKIES")
 BARD_1PSID = getenv("BARD_1PSID")
 BARD_1PSIDTS = getenv("BARD_1PSIDTS")
+CHATLULU_COOKIE = getenv("CHATLULU_COOKIE")
+CHATLULU_AUTH = getenv("CHATLULU_AUTH")

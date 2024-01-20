@@ -1,17 +1,15 @@
-import json
-import random
 import re
-import string
-import google.generativeai as genai
 import os
-import g4f
-import httpx
+import re
 
-from httpx import AsyncClient
-from bardapi import BardAsync, BardAsyncCookies
-from bot.helpers.BingImageCreater import ImageGenAsync
-from bot.config import PALM_API_KEY, DEEPAI_API_KEY, BING_U, CF_API_KEY, BING_CH, BING_COOKIES, BARD_1PSID, BARD_1PSIDTS
+import g4f
+import google.generativeai as genai
+import httpx
 from g4f.Provider.Bing import Bing, Tones
+from httpx import AsyncClient
+
+# from bot.helpers.BingImageCreater import ImageGenAsync
+from bot.config import PALM_API_KEY, DEEPAI_API_KEY, CF_API_KEY
 from bot.helpers.functions import random_string
 
 
@@ -104,8 +102,10 @@ async def cf(message: str, model: str, types: str) -> str:
     elif types == "img":
         inputs = {"prompt": message}
         try:
-            try: os.mkdir("images")
-            except: pass
+            try:
+                os.mkdir("images")
+            except:
+                pass
             response = await client.post(url=url + model, json=inputs, timeout=60)
             await client.aclose()
             with open(f"images/{random_string(10)}.png",
@@ -171,17 +171,40 @@ async def bing(message: str) -> str:
 
 
 async def bingImg(message: str) -> list:
+    pass
+
+
+async def Llama70b(message: str) -> str:
     try:
-        img = ImageGenAsync(auth_cookie=BING_U, all_cookies=BING_COOKIES)
-        r = img.get_images(message)
-        img_paths = []
-        for img_url in r:
-            img = httpx.get(img_url).content
-            with open(f"images/{''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))}.png",
-                      "wb") as f:
-                f.write(img)
-                f.close()
-            img_paths.append(os.path.abspath(f.name))
-        return img_paths
+        response = g4f.ChatCompletion.create_async(model=g4f.models.llama70b_v2_chat,
+                                                   messages=[{"role": "user", "content": f"{message}"}])
+        return await response
     except Exception as e:
-        return [e]
+        return f"Something went wrong while generating text. Error: {e}"
+
+
+async def falcon(message: str) -> str:
+    try:
+        response = g4f.ChatCompletion.create_async(model=g4f.models.falcon_40b,
+                                                   messages=[{"role": "user", "content": f"{message}"}])
+        return await response
+    except Exception as e:
+        return f"Something went wrong while generating text. Error: {e}"
+
+
+async def claude(message: str) -> str:
+    try:
+        response = g4f.ChatCompletion.create_async(model=g4f.models.claude_v2,
+                                                   messages=[{"role": "user", "content": f"{message}"}])
+        return await response
+    except Exception as e:
+        return f"Something went wrong while generating text. Error: {e}"
+
+
+async def phinder(message: str) -> str:
+    try:
+        response = g4f.ChatCompletion.create_async(model=g4f.models.default, provider=g4f.Provider.Phind,
+                                                   messages=[{"role": "user", "content": f"{message}"}])
+        return await response
+    except Exception as e:
+        return f"Something went wrong while generating text. Error: {e}"
