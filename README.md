@@ -20,23 +20,29 @@
 - OCR (NO API)
 
 ## Bot Commands
-- /start - Start the bot
-- /help - Help
-- /ping - Ping
-- /create - Create an image (Microsoft Image Creator)
-- /chat - Chat with the bot (Mistral 7b)
-- /gpt4 - Chat with the bot (GPT-4)
+
+- `/start` - Start the bot
+- `/help` - Help
+- `/ping` - Ping
+- `/create` - Create an image (Microsoft Image Creator)
+- `/chat` - Chat with the bot (Mistral 7b)
+- `/gpt4` - Chat with the bot (GPT-4)
 
 ## Setup 
 - Install Python 3.9 or higher
-- Install the requirements: `pip install -r requirements.txt`
-- Edit `sample_config.env` add your API keys and rename it to `config.env`: `mv sample_config.env config.env`
+- Install the requirements: `pip3 install -r requirements.txt`
+- Edit `sample_config.env` add your API keys and rename it to `config.env`:
+
+`mv sample_config.env config.env`
+
 - Run ocr binary (optional): `export PORT=3333 && ./ocrserver`
 - Run the bot: `python3 -m bot`
 
 ## Contributors
-- Me
+
+- [Jashu]
 
 ## References
-- [Telegram Boilerplate]("https://github.com/sanjit-sinha/TelegramBot-Boilerplate") 
-- [GPT 4 Free]("https://github.com/xtekky/gpt4free")
+
+- [Telegram Boilerplate](https://github.com/sanjit-sinha/TelegramBot-Boilerplate)
+- [GPT 4 Free](https://github.com/xtekky/gpt4free)
