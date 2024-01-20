@@ -173,4 +173,4 @@ async def msImgGen(_, message: Message):
         return await msImgGen_reply.edit(msImgGen_usage)
 
     output = await msCreate(content)
-    return await message.reply_photo(output)
+    return await message.reply_photo(output) and await msImgGen_reply.delete() and os.remove(output)
