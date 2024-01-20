@@ -12,7 +12,7 @@ async def get_price_history(message: str) -> str:
     headers = {'Host': 'price-history.in', 'Content-Type': 'application/json'}
     client = AsyncClient(headers=headers)
     try:
-        response = await client.post('https://price-history.in/https://price-history.in/api/search',
+        response = await client.post('https://price-history.in/api/search',
                                      json={'url': message})
         match = re.search(r'([A-Za-z0-9]+)$', response.json()['code'])
         response_2 = await client.post(f'https://price-history.in/api/price/{match.group(1)}')
@@ -64,4 +64,4 @@ async def get_price_history_text(message: str) -> str:
         return string_msg
 
     except Exception as e:
-        return f"Something went wrong while generating image. Error: {e}"
+        return f"Something went wrong while generating text. Error: {e}"
