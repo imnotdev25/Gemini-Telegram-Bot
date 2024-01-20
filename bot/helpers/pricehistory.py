@@ -1,6 +1,5 @@
 import os
 import re
-from typing import Any
 
 from httpx import AsyncClient
 from plotly import graph_objects as go
@@ -9,7 +8,7 @@ from plotly.subplots import make_subplots
 from bot.helpers.functions import random_string
 
 
-async def get_price_history(message: str) -> Any:
+async def get_price_history(message: str) -> str:
     headers = {'Host': 'price-history.in', 'Content-Type': 'application/json'}
     client = AsyncClient(headers=headers)
     try:
@@ -37,10 +36,10 @@ async def get_price_history(message: str) -> Any:
                           font=dict(family="Courier New, monospace", size=16, color="#7f7f7f"))
         path = os.getcwd() + f"images/{random_string(5)}.png"
         fig.write_image(path)
-        return path
+        yield path
 
     except Exception as e:
-        return f"Something went wrong while generating image. Error: {e}"
+        yield f"Something went wrong while generating image. Error: {e}"
 
 
 async def get_price_history_text(message: str) -> str:
