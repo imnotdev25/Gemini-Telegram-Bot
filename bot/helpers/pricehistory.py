@@ -37,7 +37,7 @@ async def get_price_history(message: str) -> str:
         path = os.getcwd() + f"images/{random_string(5)}.png"
         a.save(fig, path)
         a.join()
-        return os.getcwd() + path
+        return path
 
     except Exception as e:
         return f"Something went wrong while generating image. Error: {e}"

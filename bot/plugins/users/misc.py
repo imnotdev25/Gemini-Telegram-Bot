@@ -5,7 +5,7 @@ from bot.helpers.pricehistory import get_price_history, get_price_history_text
 
 
 @Client.on_message(filters.command(["price", "history"]))
-async def pricehistory(_, message: Message):
+async def priceHistory(_, message: Message):
     """ Price History"""
     pricehistory_usage = f"**Usage:** price history. Reply to text message or just type the text after command. \n\n**Price History.** \n\n**Example:** /price link"
     prehistory_reply = await message.reply_text("...", quote=True)
@@ -21,4 +21,4 @@ async def pricehistory(_, message: Message):
         caption = await get_price_history_text(content)
         return await message.reply_photo(output, caption=caption) and await prehistory_reply.delete()
     except Exception as e:
-        return await prehistory_reply.edit(f"Something went wrong while getting history. Error: {e}")
+        return await prehistory_reply.edit(f"**Error:** {e}")
