@@ -1,16 +1,15 @@
-import asyncio
 from functools import wraps
-from cachetools import TTLCache
-from typing import Callable, Union
+from typing import Callable
 
+from cachetools import TTLCache
 from pyrogram import Client
-from pyrogram.types import CallbackQuery, Message
+from pyrogram.types import Message
 
 from bot import loop
-from bot.helpers.functions import isAdmin
 # from bot.helpers.ratelimiter import RateLimiter
 from bot.config import ALLOWED_USERS, ALLOWED_CHATS
-
+from bot.database.database import getChat
+from bot.helpers.functions import isAdmin
 
 # ratelimit = RateLimiter()
 
@@ -65,7 +64,7 @@ def allowed_user(func: Callable) -> Callable:
 
     @wraps(func)
     async def decorator(client: Client, message: Message):
-        if message.from_user.id in ALLOWED_USERS:
+        if message.from_user.id in ALLOWED_USERS | getChat(message.chat.id):
             return await func(client, message)
         else:
             await message.reply_text("You are not allowed to use this bot.")
@@ -77,10 +76,10 @@ def allowed_chat(func: Callable) -> Callable:
 
     @wraps(func)
     async def decorator(client: Client, message: Message):
-        if message.chat.id in ALLOWED_CHATS:
+        if message.chat.id in ALLOWED_CHATS | getChat(message.chat.id):
             return await func(client, message)
         else:
-            await message.reply_text("You are not allowed to use this bot here. Contact @ironman_systum for access.")
+            await message.reply_text("You are not allowed to use this bot here. Contact @ironmangujju for access.")
 
     return decorator
 

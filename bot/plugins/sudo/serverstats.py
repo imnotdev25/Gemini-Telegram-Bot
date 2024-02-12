@@ -1,15 +1,13 @@
 import os
-import time
 import shutil
-import psutil
-
-from shutil import disk_usage
+import time
 from datetime import datetime
+
+import psutil
 from PIL import Image, ImageDraw, ImageFont
-from psutil import disk_usage as disk_usage_percent
 from pyrogram import Client, filters
-from pyrogram.types import Message
 from pyrogram.types import Message, InputMediaPhoto
+
 from bot import BotStartTime
 from bot.helpers.filters import sudo_cmd
 # from bot.helpers.decorators import ratelimiter
@@ -70,5 +68,5 @@ async def stats(_, message: Message):
     draw.text((857, 607), f"{(end - start).microseconds / 1000} ms", (255, 255, 255), font=ironfont)
 
     image.save("stats.png")
-    await msg.edit_media(media=InputMediaPhoto("stats.png", caption=caption))
-    os.remove("stats.png")
+    await msg.edit_media(media=InputMediaPhoto("images/stats.png", caption=caption))
+    os.remove("images/stats.png")

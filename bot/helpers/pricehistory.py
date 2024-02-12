@@ -1,11 +1,11 @@
 import os
 import re
 
+import matplotlib.pyplot as plt
+import seaborn as sns
 from httpx import AsyncClient
-from plotly import graph_objects as go
-from plotly.subplots import make_subplots
 
-from bot.helpers.functions import random_string
+from bot.helpers.functions import random_string, AsyncPlotter
 
 
 async def get_price_history(message: str) -> str:
@@ -13,9 +13,9 @@ async def get_price_history(message: str) -> str:
     client = AsyncClient(headers=headers)
     try:
         response = await client.post('https://price-history.in/api/search',
-                                     json={'url': message})
+                                     json={'url': message}, timeout=20)
         match = re.search(r'([A-Za-z0-9]+)$', response.json()['code'])
-        response_2 = await client.post(f'https://price-history.in/api/price/{match.group(1)}')
+        response_2 = await client.post(f'https://price-history.in/api/price/{match.group(1)}', timeout=20)
         await client.aclose()
         data = response_2.json()['History']['Price']
         x = [i['x'] for i in data]
@@ -25,17 +25,18 @@ async def get_price_history(message: str) -> str:
                data_2['MinOfferPrice']]
         x_1 = [data_2['UpdatedOn'], data_2['MinOfferPriceOn'], data_2['MinPriceOn'], data_2['MaxPriceOn'],
                data_2['UpdatedOn'], data_2['MinOfferPriceOn']]
-        fig = make_subplots(rows=2, cols=1, shared_yaxes=True, start_cell="top-left",
-                            x_title="Date", y_title="Price")
-        fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price History', line=dict(color='#274D61')), row=1,
-                      col=1)
-        fig.add_trace(
-            go.Scatter(x=x_1, y=y_1, mode='markers+text', text=["Current", "MRP", "Min", "Max", "Offer", "MinO"],
-                       textposition="middle right", name="Price", marker=dict(color='#69B0AC', size=10)), row=2, col=1)
-        fig.update_layout(height=720, width=1080, title_text="Price History", title_x=0.5,
-                          font=dict(family="Courier New, monospace", size=16, color="#7f7f7f"))
+        a = AsyncPlotter()
+        plt.figure()
+        plt.title("Price History")
+        fig, axs = plt.subplots(2, 1)
+        sns.lineplot(x=x, y=y, ax=axs[0], color='#274D61')
+        sns.scatterplot(x=x_1, y=y_1, ax=axs[1], color="#69B0AC")
+        labels = ["Current", "MRP", "Min", "Max", "Offer", "MinO"]
+        for i, txt in enumerate(labels):
+            axs[1].annotate(txt, (x_1[i], y_1[i]), textcoords="offset points", xytext=(0, 10), ha='center', fontsize=10)
         path = os.getcwd() + f"images/{random_string(5)}.png"
-        fig.write_image(path)
+        a.save(fig, path)
+        a.join()
         return os.getcwd() + path
 
     except Exception as e:
