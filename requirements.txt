@@ -1,4 +1,4 @@
-https://github.com/TelegramPlayGround/pyrogram/archive/unknown_errors.zip
+pyrogram
 bardapi~=0.1.30
 langdetect
 google-generativeai
