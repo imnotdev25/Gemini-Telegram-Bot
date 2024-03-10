@@ -173,4 +173,4 @@ async def msImgGen(_, message: Message):
         return await msImgGen_reply.edit(msImgGen_usage)
 
     output = await msCreate(content)
-    return await message.reply_photo(output) and await msImgGen_reply.delete() and os.remove(output)
+    return await Client.send_media_group(media=output, chat_id=replied_message.id) and await msImgGen_reply.delete()

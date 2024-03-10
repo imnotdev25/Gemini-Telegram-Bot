@@ -1,5 +1,5 @@
 pyrogram
-bardapi~=0.1.30
+bardapi
 langdetect
 google-generativeai
 TgCrypto
