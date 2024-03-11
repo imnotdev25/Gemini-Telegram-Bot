@@ -1,4 +1,6 @@
+import base64
 import multiprocessing as mp
+import os
 import random
 import string
 import time
@@ -8,6 +10,7 @@ from matplotlib import pyplot as plt
 from pyrogram.enums import ChatMemberStatus, ChatType
 from pyrogram.types import Message
 
+from bot import LOGGER
 from bot.config import SUDO_USERID
 
 mp.set_start_method("fork")
@@ -128,3 +131,13 @@ def get_readable_bytes(size: str) -> str:
 
 def random_string(length: int) -> str:
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))
+
+
+def saveImg(self, bs64: str) -> str:
+    try:
+        with open(f"images/{random_string(7)}.jpg", "wb") as f:
+            f.write(base64.b64decode(bs64))
+            f.close()
+        return os.path.abspath(f.name)
+    except Exception as e:
+        LOGGER(__name__).error(e)

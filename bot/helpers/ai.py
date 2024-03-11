@@ -1,15 +1,15 @@
-import re
 import os
 import re
+from typing import Dict
 
 import g4f
 import google.generativeai as genai
 import httpx
-from g4f.Provider.Bing import Bing, Tones
+from g4f.client import Client as BingClient
 from httpx import AsyncClient
 
 # from bot.helpers.BingImageCreater import ImageGenAsync
-from bot.config import PALM_API_KEY, DEEPAI_API_KEY, CF_API_KEY
+from bot.config import PALM_API_KEY, DEEPAI_API_KEY, CF_API_KEY, NVIDIA_API_KEY
 from bot.helpers.functions import random_string
 
 
@@ -71,26 +71,13 @@ async def pyAssistant(message: str) -> str:
     return await gemini(message, prompt=prompt)
 
 
-async def bard(message: str) -> str:
-    try:
-        data = {
-            "message": "string",
-            "dialog_messages": "[{\"bot\":\"\",\"user\":\"\"}]"
-        }
-        client = AsyncClient()
-        response = await client.post(url="https://api.safone.dev/bard", json=data, timeout=60)
-        return await client.aclose() and response.json()['candidates'][0]['content']['parts'][0]['text']
-    except Exception as e:
-        return f"Something went wrong while generating message. Error: {e}"
-
-
 async def cf(message: str, model: str, types: str) -> str:
     url = "https://api.cloudflare.com/client/v4/accounts/152656fb54824c069ba739d1dcef0d23/ai/run/"
     headers = {"Authorization": f"Bearer {CF_API_KEY}"}
     client = AsyncClient(headers=headers)
     if types == "gen":
         inputs = {"messages": [{"role": "system",
-                                "content": "You are now chatting with an AI assistant. The assistant will introduce itself in a moment. You are exclusively for Kaggle Group members mension in your introduction."},
+                                "content": "You are friendly AI assistant. Answer users query"},
                                {"role": "user", "content": message}]}
         try:
             response = await client.post(url=url + model, json=inputs, timeout=60)
@@ -166,37 +153,44 @@ async def deepaiLogo(message: str) -> str:
 
 
 async def bing(message: str) -> str:
-    response = g4f.ChatCompletion.create_async(model=g4f.models.gpt_4, provider=Bing, messages=[{"role": "user", "content": f"{message}"}], Tones=Tones.balanced)
-    return await response
+    bgc = BingClient()
+    response = bgc.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": f"{message}"}],
+    )
+    return response.choices[0].message.content
 
 
-async def bingImg(message: str) -> list:
-    pass
-
-
-async def Llama70b(message: str) -> str:
+async def bingImg(message: str):
     try:
-        response = g4f.ChatCompletion.create_async(model=g4f.models.llama70b_v2_chat,
-                                                   messages=[{"role": "user", "content": f"{message}"}])
-        return await response
+        pass
     except Exception as e:
-        return f"Something went wrong while generating text. Error: {e}"
+        return f"Something went wrong while generating image. Error: {e}"
 
 
-async def falcon(message: str) -> str:
-    try:
-        response = g4f.ChatCompletion.create_async(model=g4f.models.falcon_40b,
-                                                   messages=[{"role": "user", "content": f"{message}"}])
-        return await response
-    except Exception as e:
-        return f"Something went wrong while generating text. Error: {e}"
+# async def Llama70b(message: str) -> str:
+#     try:
+#         response = g4f.ChatCompletion.create_async(model=g4f.models.,
+#                                                    messages=[{"role": "user", "content": f"{message}"}])
+#         return response
+#     except Exception as e:
+#         return f"Something went wrong while generating text. Error: {e}"
+
+
+# async def falcon(message: str) -> str:
+#     try:
+#         response = g4f.ChatCompletion.create_async(model=g4f.models.falcon_40b,
+#                                                    messages=[{"role": "user", "content": f"{message}"}])
+#         return await response
+#     except Exception as e:
+#         return f"Something went wrong while generating text. Error: {e}"
 
 
 async def claude(message: str) -> str:
     try:
         response = g4f.ChatCompletion.create_async(model=g4f.models.claude_v2,
                                                    messages=[{"role": "user", "content": f"{message}"}])
-        return await response
+        return response
     except Exception as e:
         return f"Something went wrong while generating text. Error: {e}"
 
@@ -205,6 +199,57 @@ async def phinder(message: str) -> str:
     try:
         response = g4f.ChatCompletion.create_async(model=g4f.models.default, provider=g4f.Provider.Phind,
                                                    messages=[{"role": "user", "content": f"{message}"}])
-        return await response
+        return response
     except Exception as e:
         return f"Something went wrong while generating text. Error: {e}"
+
+
+############################ NGC cloud
+
+
+async def baseNgc(message, func, payload: Dict):
+    client = AsyncClient(headers={
+        "Authorization": f"Bearer {NVIDIA_API_KEY}",
+        "Accept": "application/json",
+    })
+    base_url = 'https://api.nvcf.nvidia.com/v2/nvcf/pexec/'
+    func_url = base_url + 'functions/' + func
+    fetch_url = f"{base_url}/status/"
+    resp = await client.post(func_url, json=payload)
+    while resp.status_code == 202:
+        req_id = resp.headers.get("NVCF-REQID")
+        fetch__url = fetch_url + req_id
+        resp = await client.get(fetch__url)
+    resp.raise_for_status()
+    return resp.json()  # response['choices'][0]['message']['content']
+
+
+async def codeLLM(message: str) -> str:
+    resp = await baseNgc(message=message, func='2ae529dc-f728-4a46-9b8d-2697213666d8', payload={
+        "messages": [
+            {
+                "content": f"{message}",
+                "role": "user"
+            }
+        ],
+        "temperature": 0.7,
+        "top_p": 1,
+        "max_tokens": 1024,
+        "seed": 42,
+        "stream": False
+    })
+    return resp['choices'][0]['message']['content']
+
+
+async def starCoder(message: str) -> str:
+    resp = await baseNgc(message=message, func='6acada03-fe2f-4e4d-9e0a-e711b9fd1b59', payload={
+        "prompt": f"{message}",
+        "temperature": 0.7,
+        "top_p": 0.7,
+        "max_tokens": 1024,
+        "seed": 42,
+        "bad": None,
+        "stop": None,
+        "stream": False
+    })
+    return resp['choices'][0]['text']

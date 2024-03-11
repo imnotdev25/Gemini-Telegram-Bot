@@ -2,10 +2,10 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 
 # from bot.helpers.decorators import ratelimiter
-from bot.helpers.ai import bing, meta, mistral, llama, rewrite
+from bot.helpers.ai import bing, meta, mistral, llama, rewrite, starCoder, codeLLM
 
 
-@Client.on_message(filters.command(["bing", "bingbot", "bingbot", "bingbot"]))
+@Client.on_message(filters.command(["bing", "bingbot"]))
 async def bingBot(_, message: Message):
     """ Bing Bot"""
 
@@ -20,10 +20,10 @@ async def bingBot(_, message: Message):
         return await bing_reply.edit(bing_usage)
 
     output = await bing(content)
-    return await bing_reply.edit(f"{output}", disable_web_page_preview=True)
+    return await bing_reply.edit(f"{output}")
 
 
-@Client.on_message(filters.command(["meta", "metabot", "metabot", "metabot"]))
+@Client.on_message(filters.command(["meta", "metabot", "metabot"]))
 async def metaBot(_, message: Message):
     """ Meta Bot"""
 
@@ -77,7 +77,7 @@ async def llamaBot(_, message: Message):
     await llama_reply.edit(f"{output}", disable_web_page_preview=True)
 
 
-@Client.on_message(filters.command(["rewrite", "rewritebot", "rb", "grammar"]))
+@Client.on_message(filters.command(["rewrite", "rb", "grammar"]))
 async def rewriteBot(_, message: Message):
     """ Rewrite Bot"""
 
@@ -93,3 +93,39 @@ async def rewriteBot(_, message: Message):
 
     output = await rewrite(content)
     await rewrite_reply.edit(f"{output}", disable_web_page_preview=True)
+
+
+@Client.on_message(filters.command(["codellm", "cl", "codellmbot"]))
+async def codeLLMBot(_, message: Message):
+    """ Code LLM Bot"""
+
+    codeLLM_usage = f"**Usage:** code llm bot. Reply to a text file, text message or just type the text after command. \n\n**Code LLM Bot.** \n\n**Example:** /codellm type your text"
+    codeLLM_reply = await message.reply_text("...", quote=True)
+    replied_message = message.reply_to_message
+
+    if len(message.command) > 1:
+        content = message.text.split(None, 1)[1]
+
+    elif len(message.command) < 2:
+        return await codeLLM_reply.edit(codeLLM_usage)
+
+    output = await codeLLM(content)
+    await codeLLM_reply.edit(f"```{output}```", disable_web_page_preview=True) and replied_message.delete()
+
+
+@Client.on_message(filters.command(["starcoder", "sc"]))
+async def starCoderBot(_, message: Message):
+    """ Star Coder Bot"""
+
+    starCoder_usage = f"**Usage:** star coder bot. Reply to a text file, text message or just type the text after command. \n\n**Star Coder Bot.** \n\n**Example:** /starcoder type your text"
+    starCoder_reply = await message.reply_text("...", quote=True)
+    replied_message = message.reply_to_message
+
+    if len(message.command) > 1:
+        content = message.text.split(None, 1)[1]
+
+    elif len(message.command) < 2:
+        return await starCoder_reply.edit(starCoder_usage)
+
+    output = await starCoder(content)
+    await starCoder_reply.edit(f"```{output}```", disable_web_page_preview=True) and replied_message.delete()
