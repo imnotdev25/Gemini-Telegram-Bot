@@ -109,11 +109,11 @@ async def deepAiLogo(_, message: Message):
 
 
 @Client.on_message(filters.command(["dream"]))
-async def imGen(_, message: Message):
-    """ Imagine Generator"""
+async def dreaMShaper(_, message: Message):
+    """ Dream Shaper Bot"""
 
-    imGen_usage = f"**Usage:** imagine generator. Reply to a text file, text message or just type the text after command. \n\n**Image Generation. AI.** \n\n**Example:** /imagine Hot Burger"
-    imGen_reply = await message.reply_text("...", quote=True)
+    dreamShaper_usage = f"**Usage:** dream shaper bot. Reply to a text file, text message or just type the text after command. \n\n**Dream Shaper Bot.** \n\n**Example:** /dream type your text"
+    dreamShaper_reply = await message.reply_text("...", quote=True)
     replied_message = message.reply_to_message
 
     if len(message.command) > 1:
@@ -132,21 +132,21 @@ async def imGen(_, message: Message):
             os.remove("temp_file")
 
         else:
-            return await imGen_reply.edit(imGen_usage)
+            return await dreamShaper_reply.edit(dreamShaper_usage)
 
     elif len(message.command) < 2:
-        return await imGen_reply.edit(imGen_usage)
+        return await dreamShaper_reply.edit(dreamShaper_usage)
 
     output = await dreamShaper(content)
-    return await message.reply_photo(output) and await imGen_reply.delete() and os.remove(output)
+    return await message.reply_photo(output) and await dreamShaper_reply.delete() and os.remove(output)
 
 
-@Client.on_message(filters.command(["imaginev2", "im", "imgen"]))
-async def imGen(_, message: Message):
-    """ Imagine Generator"""
+@Client.on_message(filters.command(["imaginev2"]))
+async def imGenV2(_, message: Message):
+    """ Imagine Generator V2"""
 
-    imGen_usage = f"**Usage:** imagine generator. Reply to a text file, text message or just type the text after command. \n\n**Image Generation. AI.** \n\n**Example:** /imagine Hot Burger"
-    imGen_reply = await message.reply_text("...", quote=True)
+    imGenV2_usage = f"**Usage:** imagine generator v2. Reply to a text file, text message or just type the text after command. \n\n**Image Generation. AI.** \n\n**Example:** /imaginev2 Hot Burger"
+    imGenV2_reply = await message.reply_text("...", quote=True)
     replied_message = message.reply_to_message
 
     if len(message.command) > 1:
@@ -165,10 +165,10 @@ async def imGen(_, message: Message):
             os.remove("temp_file")
 
         else:
-            return await imGen_reply.edit(imGen_usage)
+            return await imGenV2_reply.edit(imGenV2_usage)
 
     elif len(message.command) < 2:
-        return await imGen_reply.edit(imGen_usage)
+        return await imGenV2_reply.edit(imGenV2_usage)
 
     output = await stableDiffusionIn(content)
-    return await message.reply_photo(output) and await imGen_reply.delete() and os.remove(output)
+    return await message.reply_photo(output) and await imGenV2_reply.delete() and os.remove(output)
