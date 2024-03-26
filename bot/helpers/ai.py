@@ -103,6 +103,20 @@ async def cf(message: str, model: str, types: str) -> str:
         except Exception as e:
             return f"Something went wrong while generating image. Error: {e}"
 
+    elif types == "bin":
+        inputs = {"prompt": message}
+        try:
+            response = await client.post(url=url + model, json=inputs, timeout=60)
+            await client.aclose()
+            with open(f"images/{random_string(10)}.png",
+                      "wb") as f:
+                f.write(response.content)
+                f.close()
+            return os.path.abspath(f.name)
+
+        except Exception as e:
+            return f"Something went wrong while generating text. Error: {e}"
+
     else:
         return "Model not found"
 
