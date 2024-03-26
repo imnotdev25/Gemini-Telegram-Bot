@@ -3,20 +3,20 @@ import re
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-from httpx import AsyncClient
+from httpx import Client, AsyncClient
 
 from bot.helpers.functions import random_string, AsyncPlotter
 
 
-async def get_price_history(message: str) -> str:
+def get_price_history(message: str) -> str:
     headers = {'Host': 'price-history.in', 'Content-Type': 'application/json'}
-    client = AsyncClient(headers=headers)
+    client = Client(headers=headers)
     try:
-        response = await client.post('https://price-history.in/api/search',
+        response = client.post('https://price-history.in/api/search',
                                      json={'url': message}, timeout=20)
         match = re.search(r'([A-Za-z0-9]+)$', response.json()['code'])
-        response_2 = await client.post(f'https://price-history.in/api/price/{match.group(1)}', timeout=20)
-        await client.aclose()
+        response_2 = client.post(f'https://price-history.in/api/price/{match.group(1)}', timeout=20)
+        client.close()
         data = response_2.json()['History']['Price']
         x = [i['x'] for i in data]
         y = [i['y'] for i in data]

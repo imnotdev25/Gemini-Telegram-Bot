@@ -123,6 +123,14 @@ async def stableDiffusion(message: str) -> str:
     return await cf(message, "@cf/stabilityai/stable-diffusion-xl-base-1.0", types="img")
 
 
+async def dreamShaper(message: str) -> str:
+    return await cf(message, "@cf/lykon/dreamshaper-8-lcm", types="img")
+
+
+async def stableDiffusionIn(message: str) -> str:
+    return await cf(message, "@cf/runwayml/stable-diffusion-v1-5-inpainting", types="img")
+
+
 async def deepai(message: str, typ: str, urn: str) -> str:
     base_url = "https://api.deepai.org/api/"
     headers = {"api-key": f"{DEEPAI_API_KEY}"}
@@ -161,31 +169,6 @@ async def bing(message: str) -> str:
     return response.choices[0].message.content
 
 
-async def bingImg(message: str):
-    try:
-        pass
-    except Exception as e:
-        return f"Something went wrong while generating image. Error: {e}"
-
-
-# async def Llama70b(message: str) -> str:
-#     try:
-#         response = g4f.ChatCompletion.create_async(model=g4f.models.,
-#                                                    messages=[{"role": "user", "content": f"{message}"}])
-#         return response
-#     except Exception as e:
-#         return f"Something went wrong while generating text. Error: {e}"
-
-
-# async def falcon(message: str) -> str:
-#     try:
-#         response = g4f.ChatCompletion.create_async(model=g4f.models.falcon_40b,
-#                                                    messages=[{"role": "user", "content": f"{message}"}])
-#         return await response
-#     except Exception as e:
-#         return f"Something went wrong while generating text. Error: {e}"
-
-
 async def claude(message: str) -> str:
     try:
         response = g4f.ChatCompletion.create_async(model=g4f.models.claude_v2,
@@ -204,8 +187,7 @@ async def phinder(message: str) -> str:
         return f"Something went wrong while generating text. Error: {e}"
 
 
-############################ NGC cloud
-
+# ########################### NGC cloud
 
 async def baseNgc(message, func, payload: Dict):
     client = AsyncClient(headers={

@@ -110,7 +110,7 @@ async def codeLLMBot(_, message: Message):
         return await codeLLM_reply.edit(codeLLM_usage)
 
     output = await codeLLM(content)
-    await codeLLM_reply.edit(f"```{output}```", disable_web_page_preview=True) and replied_message.delete()
+    await codeLLM_reply.edit(f"```{output}```")
 
 
 @Client.on_message(filters.command(["starcoder", "sc"]))
