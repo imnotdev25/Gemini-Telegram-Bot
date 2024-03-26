@@ -138,11 +138,11 @@ async def stableDiffusion(message: str) -> str:
 
 
 async def dreamShaper(message: str) -> str:
-    return await cf(message, "@cf/lykon/dreamshaper-8-lcm", types="img")
+    return await cf(message, "@cf/lykon/dreamshaper-8-lcm", types="bin")
 
 
 async def stableDiffusionIn(message: str) -> str:
-    return await cf(message, "@cf/runwayml/stable-diffusion-v1-5-inpainting", types="img")
+    return await cf(message, "@cf/runwayml/stable-diffusion-v1-5-inpainting", types="bin")
 
 
 async def deepai(message: str, typ: str, urn: str) -> str:
