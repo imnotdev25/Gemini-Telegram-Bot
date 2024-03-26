@@ -142,7 +142,7 @@ async def dreamShaper(message: str) -> str:
 
 
 async def stableDiffusionIn(message: str) -> str:
-    return await cf(message, "@cf/runwayml/stable-diffusion-v1-5-inpainting", types="bin")
+    return await cf(message, "@cf/bytedance/stable-diffusion-xl-lightning", types="bin")
 
 
 async def deepai(message: str, typ: str, urn: str) -> str:
