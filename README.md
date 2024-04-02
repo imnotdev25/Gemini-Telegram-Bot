@@ -38,6 +38,11 @@
 - Run ocr binary (optional): `export PORT=3333 && ./ocrserver`
 - Run the bot: `python3 -m bot`
 
+## TO DO
+
+- Implement RAG
+
+
 ## Contributors
 
 - [Jashu]
