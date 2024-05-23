@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 
 # from bot.helpers.decorators import ratelimiter
-from bot.helpers.ai import bing, meta, mistral, llama, rewrite, starCoder, codeLLM
+from bot.helpers.ai import bing, meta, mistral, llama, rewrite, starCoder, codeLLM, chatgpt4, chatgpt4o
 
 
 @Client.on_message(filters.command(["bing", "bingbot"]))
@@ -129,3 +129,39 @@ async def starCoderBot(_, message: Message):
 
     output = await starCoder(content)
     await starCoder_reply.edit(f"```{output}```", disable_web_page_preview=True) and replied_message.delete()
+
+
+@Client.on_message(filters.command(["gpt4", "chatgpt4"]))
+async def chatGPT4Bot(_, message: Message):
+    """ Chat GPT4 Bot"""
+
+    chatGPT4_usage = f"**Usage:** chat gpt4 bot. Reply to a text file, text message or just type the text after command. \n\n**Chat GPT4 Bot.** \n\n**Example:** /chatgpt4 type your text"
+    chatGPT4_reply = await message.reply_text("...", quote=True)
+    replied_message = message.reply_to_message
+
+    if len(message.command) > 1:
+        content = message.text.split(None, 1)[1]
+
+    elif len(message.command) < 2:
+        return await chatGPT4_reply.edit(chatGPT4_usage)
+
+    output = await chatgpt4(content)
+    await chatGPT4_reply.edit(f"{output}", disable_web_page_preview=True)
+
+
+@Client.on_message(filters.command(["gpt4o", "chatgpt4o"]))
+async def chatGPT4oBot(_, message: Message):
+    """ Chat GPT4o Bot"""
+
+    chatGPT4o_usage = f"**Usage:** chat gpt4o bot. Reply to a text file, text message or just type the text after command. \n\n**Chat GPT4o Bot.** \n\n**Example:** /chatgpt4o type your text"
+    chatGPT4o_reply = await message.reply_text("...", quote=True)
+    replied_message = message.reply_to_message
+
+    if len(message.command) > 1:
+        content = message.text.split(None, 1)[1]
+
+    elif len(message.command) < 2:
+        return await chatGPT4o_reply.edit(chatGPT4o_usage)
+
+    output = await chatgpt4o(content)
+    await chatGPT4o_reply.edit(f"{output}", disable_web_page_preview=True)

@@ -1,16 +1,60 @@
 import os
 import re
-from typing import Dict
-
 import g4f
 import google.generativeai as genai
 import httpx
+
 from g4f.client import Client as BingClient
 from httpx import AsyncClient
-
+from typing import Dict
 # from bot.helpers.BingImageCreater import ImageGenAsync
-from bot.config import PALM_API_KEY, DEEPAI_API_KEY, CF_API_KEY, NVIDIA_API_KEY
+from bot.config import PALM_API_KEY, DEEPAI_API_KEY, CF_API_KEY, NVIDIA_API_KEY, OPENAI_API_KEY
 from bot.helpers.functions import random_string
+from openai import OpenAI
+
+
+async def openai_helper(message: str, model: str = "gpt-4-turbo", *args) -> str:
+    client = OpenAI(api_key=OPENAI_API_KEY, timeout=10)
+
+    if args[0] == "gen":
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": message},
+            ]
+        )
+        return response.choices[0].message.content
+    if args[0] == "img":
+        response = client.images.generate(
+            model="dall-e-3",
+            prompt=message,
+            size="1024x1024",
+            quality="hd",
+            n=1,
+        )
+        client_ = AsyncClient()
+        image = await client_.get(response.images[0].url)
+        await client_.aclose()
+        with open(f"images/{random_string(10)}.png", "wb") as f:
+            f.write(image.content)
+            f.close()
+        return os.path.abspath(f.name)
+
+
+async def chatgpt4(message: str) -> str:
+    response = await openai_helper(message, "gpt-4-turbo", "gen")
+    return response
+
+
+async def chatgpt4o(message: str) -> str:
+    response = await openai_helper(message, "gpt-4o", "gen")
+    return response
+
+
+async def dall_e(message: str) -> str:
+    response = await openai_helper(message, "dall-e-3", "img")
+    return response
 
 
 async def gemini(message: str, prompt: str) -> str:
