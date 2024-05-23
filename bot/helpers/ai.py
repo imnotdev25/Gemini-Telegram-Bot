@@ -14,7 +14,7 @@ from openai import OpenAI
 
 
 async def openai_helper(message: str, model: str = "gpt-4-turbo", *args) -> str:
-    client = OpenAI(api_key=OPENAI_API_KEY, timeout=10)
+    client = OpenAI(api_key=OPENAI_API_KEY, timeout=60)
 
     if args[0] == "gen":
         response = client.chat.completions.create(
