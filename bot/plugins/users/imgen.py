@@ -204,6 +204,6 @@ async def dallE(_, message: Message):
         return await dallE_reply.edit(dallE_usage)
 
     output = await dall_e(content)
-    return await message.reply_photo(output) and await dallE_reply.delete()
+    return await message.reply_photo(output) and await dallE_reply.delete() and os.remove(output)
 
 

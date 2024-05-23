@@ -27,14 +27,18 @@ async def openai_helper(message: str, model: str = "gpt-4-turbo", *args) -> str:
         return response.choices[0].message.content
     if args[0] == "img":
         response = client.images.generate(
-            model="dall-e-3",
+            model=model,
             prompt=message,
             size="1024x1024",
             quality="hd",
             n=1,
         )
-        return response.output[0].url
-
+        client_ = AsyncClient()
+        image = await client_.get(response.data[0].url)
+        await client_.aclose()
+        with open(f"images/{random_string(10)}.png", "wb") as f:
+            f.write(image.content)
+            f.close()
 
 async def chatgpt4(message: str) -> str:
     response = await openai_helper(message, "gpt-4-turbo", "gen")
