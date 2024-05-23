@@ -39,6 +39,8 @@ async def openai_helper(message: str, model: str = "gpt-4-turbo", *args) -> str:
         with open(f"images/{random_string(10)}.png", "wb") as f:
             f.write(image.content)
             f.close()
+        return os.path.abspath(f.name)
+
 
 async def chatgpt4(message: str) -> str:
     response = await openai_helper(message, "gpt-4-turbo", "gen")
