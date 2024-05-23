@@ -9,7 +9,7 @@ from bot.helpers.ai import stableDiffusion, deepaiImg, deepaiLogo, dreamShaper, 
 from bot.helpers.filters import allowed_users
 
 
-@Client.on_message(filters.command(["imagine", "im", "imgen"]))
+@Client.on_message(filters.command(["sdxl", "im", "imgen"]))
 async def imGen(_, message: Message):
     """ Imagine Generator"""
 
@@ -174,7 +174,7 @@ async def imGenV2(_, message: Message):
     return await message.reply_photo(output) and await imGenV2_reply.delete() and os.remove(output)
 
 
-@Client.on_message(filters.command(["dalle", "img"]))
+@Client.on_message(filters.command(["imagine", "dalle"]))
 async def dallE(_, message: Message):
     """ DALL-E """
 
