@@ -126,7 +126,7 @@ You have the right to access and control your personal information, including: \
 - Requesting the deletion of personal data when it is no longer necessary for us to retain such data. \n
 - Objecting to the processing of your personal data. \n
 
-## Changes to Our PrivacyContinue  \n
+**Changes to Our PrivacyContinue**  \n
 If we decide to change our privacy policy, we will post those changes on this page and/or update the Effective Date at the top of this document. We encourage you to periodically review this policy for the latest information on our privacy practices. \n
 
 **Contact Us** \n
