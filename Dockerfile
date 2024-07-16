@@ -7,6 +7,6 @@ COPY pyproject.toml poetry.lock /app/
 COPY ocrserver /app/ocrserver
 RUN pip install poetry poetry-core
 RUN poetry config virtualenvs.create false
-RUN poetry install --install main --no-root
+RUN poetry install --no-root --only main
 RUN chmod +x /app/start.sh
 RUN chmod +x /app/ocrserver
