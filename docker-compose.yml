@@ -18,7 +18,7 @@ services:
     env_file:
       - .env
     environment:
-      - MONGO_URI=mongodb://mongodb:27017
+      - MONGO_URI
       - API_ID
       - API_HASH
       - BOT_TOKEN
