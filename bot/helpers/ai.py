@@ -31,6 +31,10 @@ async def openai_helper(message: str, model: str = "gpt-4-turbo", *args) -> str:
         )
         client_ = AsyncClient()
         image = await client_.get(response.data[0].url)
+        try:
+            os.mkdir("images")
+        except:
+            pass
         await client_.aclose()
         with open(f"images/{random_string(10)}.png", "wb") as f:
             f.write(image.content)
