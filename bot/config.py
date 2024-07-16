@@ -17,7 +17,7 @@ try:
 except:
     pass
 SUDO_USERID = list(set(SUDO_USERID))
-MONGO_URI = getenv("MONGO_URI")
+MONGO_URI = getenv("MONGO_URI", "mongodb://mongodb:27017")
 ALLOWED_USERS = list(set(json.loads(getenv("ALLOWED_USERS"))))
 ALLOWED_CHATS = list(set(json.loads(getenv("ALLOWED_CHATS"))))
 PALM_API_KEY = getenv("PALM_API_KEY")
