@@ -1,16 +1,12 @@
 import os
 import re
-import g4f
-import google.generativeai as genai
-import httpx
 
-from g4f.client import Client as BingClient
+import google.generativeai as genai
 from httpx import AsyncClient
-from typing import Dict
-# from bot.helpers.BingImageCreater import ImageGenAsync
-from bot.config import PALM_API_KEY, DEEPAI_API_KEY, CF_API_KEY, NVIDIA_API_KEY, OPENAI_API_KEY
-from bot.helpers.functions import random_string
 from openai import OpenAI
+
+from bot.config import PALM_API_KEY, CF_API_KEY, NVIDIA_API_KEY, OPENAI_API_KEY
+from bot.helpers.functions import random_string
 
 
 async def openai_helper(message: str, model: str = "gpt-4-turbo", *args) -> str:
@@ -166,15 +162,7 @@ async def cf(message: str, model: str, types: str) -> str:
 
 
 async def meta(message: str) -> str:
-    return await cf(message, "@cf/meta/llama-2-7b-chat-fp16", types="gen")
-
-
-async def mistral(message: str) -> str:
-    return await cf(message, "@cf/mistral/mistral-7b-instruct-v0.1", types="gen")
-
-
-async def llama(message: str) -> str:
-    return await cf(message, "@hf/thebloke/codellama-7b-instruct-awq", types="gen")
+    return await cf(message, "@cf/meta/meta-ai", types="gen")
 
 
 async def stableDiffusion(message: str) -> str:
@@ -189,107 +177,51 @@ async def stableDiffusionIn(message: str) -> str:
     return await cf(message, "@cf/bytedance/stable-diffusion-xl-lightning", types="bin")
 
 
-async def deepai(message: str, typ: str, urn: str) -> str:
-    base_url = "https://api.deepai.org/api/"
-    headers = {"api-key": f"{DEEPAI_API_KEY}"}
-    if typ == "img":
-        try:
-            data = {'text': f'{message}'}
-            client = AsyncClient()
-            r = await client.post(url=base_url + urn, data=data, headers=headers, timeout=60)
-            image = httpx.get(r.json()["output_url"]).content
-            await client.aclose()
-            with open(f"images/{random_string(10)}.png",
-                      "wb") as f:
-                f.write(image)
-                f.close()
-            return os.path.abspath(f.name)
-        except Exception as e:
-            return f"Something went wrong while generating image. Error: {e}"
-    else:
-        pass
-
-
-async def deepaiImg(message: str) -> str:
-    return await deepai(message, typ="img", urn="text2img")
-
-
-async def deepaiLogo(message: str) -> str:
-    return await deepai(message, typ="img", urn="logo-generator")
-
-
-async def bing(message: str) -> str:
-    bgc = BingClient()
-    response = bgc.chat.completions.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": f"{message}"}],
-    )
-    return response.choices[0].message.content
-
-
-async def claude(message: str) -> str:
-    try:
-        response = g4f.ChatCompletion.create_async(model=g4f.models.claude_v2,
-                                                   messages=[{"role": "user", "content": f"{message}"}])
-        return response
-    except Exception as e:
-        return f"Something went wrong while generating text. Error: {e}"
-
-
-async def phinder(message: str) -> str:
-    try:
-        response = g4f.ChatCompletion.create_async(model=g4f.models.default, provider=g4f.Provider.Phind,
-                                                   messages=[{"role": "user", "content": f"{message}"}])
-        return response
-    except Exception as e:
-        return f"Something went wrong while generating text. Error: {e}"
-
-
 # ########################### NGC cloud
+async def openai_ngc(message: str, model: str) -> str:
+    client = OpenAI(
+        base_url="https://integrate.api.nvidia.com/v1",
+        api_key=f"{NVIDIA_API_KEY}"
+    )
 
-async def baseNgc(message, func, payload: Dict):
-    client = AsyncClient(headers={
-        "Authorization": f"Bearer {NVIDIA_API_KEY}",
-        "Accept": "application/json",
-    })
-    base_url = 'https://api.nvcf.nvidia.com/v2/nvcf/pexec/'
-    func_url = base_url + 'functions/' + func
-    fetch_url = f"{base_url}/status/"
-    resp = await client.post(func_url, json=payload)
-    while resp.status_code == 202:
-        req_id = resp.headers.get("NVCF-REQID")
-        fetch__url = fetch_url + req_id
-        resp = await client.get(fetch__url)
-    resp.raise_for_status()
-    return resp.json()  # response['choices'][0]['message']['content']
-
-
-async def codeLLM(message: str) -> str:
-    resp = await baseNgc(message=message, func='2ae529dc-f728-4a46-9b8d-2697213666d8', payload={
-        "messages": [
-            {
-                "content": f"{message}",
-                "role": "user"
-            }
-        ],
-        "temperature": 0.7,
-        "top_p": 1,
-        "max_tokens": 1024,
-        "seed": 42,
-        "stream": False
-    })
-    return resp['choices'][0]['message']['content']
+    completion = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": f"{message}"}],
+        temperature=0.75,
+        top_p=0.7,
+        max_tokens=1024,
+        stream=False
+    )
+    return completion.choices[0].message.content
 
 
-async def starCoder(message: str) -> str:
-    resp = await baseNgc(message=message, func='6acada03-fe2f-4e4d-9e0a-e711b9fd1b59', payload={
-        "prompt": f"{message}",
-        "temperature": 0.7,
-        "top_p": 0.7,
-        "max_tokens": 1024,
-        "seed": 42,
-        "bad": None,
-        "stop": None,
-        "stream": False
-    })
-    return resp['choices'][0]['text']
+async def mistral(message: str) -> str:
+    return await openai_ngc(message, "mistralai/mistral-large")
+
+
+async def llama(message: str) -> str:
+    return await openai_ngc(message, "meta/llama3-70b-instruct")
+
+
+async def codellama_ngc(message: str) -> str:
+    return await openai_ngc(message, "meta/codellama-70b")
+
+
+async def codestral_ngc(message: str) -> str:
+    return await openai_ngc(message, "mistralai/codestral-22b-instruct-v0.1")
+
+
+async def granite_ngc(message: str) -> str:
+    return await openai_ngc(message, "ibm/granite-34b-code-instruct")
+
+
+async def snowflake_ngc(message: str) -> str:
+    return await openai_ngc(message, "snowflake/arctic")
+
+
+async def nemotron_ngc(message: str) -> str:
+    return await openai_ngc(message, "nvidia/nemotron-4-340b-instruct")
+
+
+async def mixtral_ngc(message: str) -> str:
+    return await openai_ngc(message, "mistralai/mixtral-8x22b-instruct-v0.1")

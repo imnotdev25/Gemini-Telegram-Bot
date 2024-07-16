@@ -1,10 +1,37 @@
 version: "3.3"
 
 services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+
   app:
     build:
-      context: bot-Boilerplate
-      dockerfile: Dockerfile
-    command: bash start
-    restart: on-failure
+      context: .
+    depends_on:
+      - mongodb
+    command: [ "bash", "./start.sh" ]
+    restart: always
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - API_ID
+      - API_HASH
+      - BOT_TOKEN
+      - OWNER_USERID
+      - PALM_API_KEY
+      - CF_API_KEY
+      - NVIDIA_API_KEY
+      - OPENAI_API_KEY
 
+  ocr:
+    build:
+      context: .
+    depends_on:
+      - app
+    command: [ "bash", "./ocrserver"]
+    restart: always
+    environment:
+      - PORT=3333

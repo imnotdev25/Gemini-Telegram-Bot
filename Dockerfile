@@ -1,7 +1,12 @@
 FROM python:3.10.12-slim-buster
 WORKDIR /app
 RUN chmod 777 /app
-RUN python3 -m pip install -U pip
-COPY . .
-RUN pip3 install --no-cache-dir -U -r requirements.txt
-CMD ["python3", "-m", "bot"]
+COPY /bot /app/bot
+COPY start.sh /app
+COPY pyproject.toml poetry.lock /app/
+COPY ocrserver /app/ocrserver
+RUN pip install poetry poetry-core
+RUN poetry config virtualenvs.create false
+RUN poetry install --install main --no-root
+RUN chmod +x /app/start.sh
+RUN chmod +x /app/ocrserver

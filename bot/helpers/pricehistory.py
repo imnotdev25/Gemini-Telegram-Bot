@@ -1,46 +1,6 @@
-import os
 import re
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-from httpx import Client, AsyncClient
-
-from bot.helpers.functions import random_string, AsyncPlotter
-
-
-def get_price_history(message: str) -> str:
-    headers = {'Host': 'price-history.in', 'Content-Type': 'application/json'}
-    client = Client(headers=headers)
-    try:
-        response = client.post('https://price-history.in/api/search',
-                                     json={'url': message}, timeout=20)
-        match = re.search(r'([A-Za-z0-9]+)$', response.json()['code'])
-        response_2 = client.post(f'https://price-history.in/api/price/{match.group(1)}', timeout=20)
-        client.close()
-        data = response_2.json()['History']['Price']
-        x = [i['x'] for i in data]
-        y = [i['y'] for i in data]
-        data_2 = response_2.json()['Price']
-        y_1 = [data_2['Price'], data_2['MRP'], data_2['MinPrice'], data_2['MaxPrice'], data_2['OfferPrice'],
-               data_2['MinOfferPrice']]
-        x_1 = [data_2['UpdatedOn'], data_2['MinOfferPriceOn'], data_2['MinPriceOn'], data_2['MaxPriceOn'],
-               data_2['UpdatedOn'], data_2['MinOfferPriceOn']]
-        a = AsyncPlotter()
-        plt.figure()
-        plt.title("Price History")
-        fig, axs = plt.subplots(2, 1)
-        sns.lineplot(x=x, y=y, ax=axs[0], color='#274D61')
-        sns.scatterplot(x=x_1, y=y_1, ax=axs[1], color="#69B0AC")
-        labels = ["Current", "MRP", "Min", "Max", "Offer", "MinO"]
-        for i, txt in enumerate(labels):
-            axs[1].annotate(txt, (x_1[i], y_1[i]), textcoords="offset points", xytext=(0, 10), ha='center', fontsize=10)
-        path = os.getcwd() + f"images/{random_string(5)}.png"
-        a.save(fig, path)
-        a.join()
-        return path
-
-    except Exception as e:
-        return f"Something went wrong while generating image. Error: {e}"
+from httpx import AsyncClient
 
 
 async def get_price_history_text(message: str) -> str:

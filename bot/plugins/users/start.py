@@ -6,12 +6,12 @@ from bot import bot
 from bot.helpers.start_constants import *
 from bot.config import OWNER_USERID, SUDO_USERID
 from bot.database import database
-# from bot.helpers.decorators import ratelimiter
 
 START_BUTTON = [
     [
         InlineKeyboardButton("📖 Commands", callback_data="COMMAND_BUTTON"),
         InlineKeyboardButton("👨‍💻 About me", callback_data="ABOUT_BUTTON"),
+        InlineKeyboardButton("🔐 Privacy Policy", callback_data="PRIVACY_BUTTON"),
     ],
     [
         InlineKeyboardButton(
@@ -82,6 +82,10 @@ async def botCallbacks(_, CallbackQuery: CallbackQuery):
     if CallbackQuery.data == "ABOUT_BUTTON":
         await CallbackQuery.edit_message_text(
             DEV_TEXT, reply_markup=InlineKeyboardMarkup(GOBACK_1_BUTTON))
+
+    if CallbackQuery.data == "PRIVACY_BUTTON":
+        await CallbackQuery.edit_message_text(
+            PRIVACY_POLICY, reply_markup=InlineKeyboardMarkup(GOBACK_1_BUTTON))
 
     elif CallbackQuery.data == "START_BUTTON":
         await CallbackQuery.edit_message_text(
