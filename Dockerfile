@@ -1,4 +1,4 @@
-FROM python:3.10.12-slim-buster
+FROM python:3.11-slim-buster
 WORKDIR /app
 RUN chmod 777 /app
 COPY /bot /app/bot
