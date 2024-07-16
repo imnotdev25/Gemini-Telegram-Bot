@@ -8,3 +8,4 @@ test.py
 *.png
 __pycache__/
 .pyc
+.env*
